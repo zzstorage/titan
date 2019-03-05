@@ -17,6 +17,7 @@ func init() {
 		"lset":    LSet,
 		"rpush":   RPush,
 		"rpushx":  RPushx,
+		"rpop":    RPop,
 
 		// strings
 		"get":      Get,
@@ -111,6 +112,7 @@ func init() {
 		"lset":    Desc{Proc: AutoCommit(LSet), Cons: Constraint{4, flags("wm"), 1, 1, 1}},
 		"rpush":   Desc{Proc: AutoCommit(RPush), Cons: Constraint{-3, flags("wmF"), 1, 1, 1}},
 		"rpushx":  Desc{Proc: AutoCommit(RPushx), Cons: Constraint{-3, flags("wmF"), 1, 1, 1}},
+		"rpop":    Desc{Proc: AutoCommit(RPop), Cons: Constraint{2, flags("wF"), 1, 1, 1}},
 
 		// strings
 		"get":         Desc{Proc: AutoCommit(Get), Cons: Constraint{2, flags("rF"), 1, 1, 1}},
