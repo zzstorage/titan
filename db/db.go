@@ -205,9 +205,15 @@ func (txn *Transaction) Strings(keys [][]byte) ([]*String, error) {
 		obj := NewString(txn, key)
 		if data, ok := mdata[string(tkeys[i])]; ok {
 			if err := obj.decode(data); err != nil {
-				zap.L().Error("strings decode failed",
-					zap.ByteString("key", key),
-					zap.Error(err))
+				if err == ErrKeyNotFound {
+					zap.L().Debug("strings decode failed",
+						zap.ByteString("key", key),
+						zap.Error(err))
+				} else {
+					zap.L().Error("strings decode failed",
+						zap.ByteString("key", key),
+						zap.Error(err))
+				}
 			}
 		}
 		sobjs[i] = obj
