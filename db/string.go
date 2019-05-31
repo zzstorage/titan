@@ -1,6 +1,7 @@
 package db
 
 import (
+	"go.uber.org/zap"
 	"strconv"
 )
 
@@ -278,6 +279,7 @@ func (s *String) decode(b []byte) error {
 
 	timestamp := Now()
 	if obj.ExpireAt != 0 && obj.ExpireAt < timestamp {
+		zap.L().Warn("it's expired", zap.Int64("ts", obj.ExpireAt))
 		return ErrKeyNotFound
 	}
 
