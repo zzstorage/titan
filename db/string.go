@@ -37,6 +37,10 @@ func GetString(txn *Transaction, key []byte) (*String, error) {
 		return nil, err
 	}
 
+	if err == ErrKeyNotFound {
+		str.destory(txn, key)
+	}
+
 	str.Meta.UpdatedAt = now
 	return str, nil
 }
@@ -279,7 +283,7 @@ func (s *String) decode(b []byte) error {
 
 	timestamp := Now()
 	if obj.ExpireAt != 0 && obj.ExpireAt < timestamp {
-		zap.L().Warn("it's expired", zap.Int64("ts", obj.ExpireAt))
+		s.Meta.Object = *obj
 		return ErrKeyNotFound
 	}
 
@@ -295,4 +299,13 @@ func (s *String) decode(b []byte) error {
 		s.Meta.Value = b[ObjectEncodingLength:]
 	}
 	return nil
+}
+
+func (s *String)destory(txn *Transaction, key []byte) {
+	zap.L().Warn("it's expired, will be destoried",
+		zap.ByteString("key", key), zap.Int64("ts", s.Meta.ExpireAt))
+	if err := txn.Destory(&s.Meta.Object, key); err != nil {
+		zap.L().Error("destory expired string failed", zap.ByteString("key", key),
+			zap.Error(err))
+	}
 }
