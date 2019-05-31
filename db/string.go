@@ -302,7 +302,7 @@ func (s *String) decode(b []byte) error {
 }
 
 func (s *String)destory(txn *Transaction, key []byte) {
-	zap.L().Warn("it's expired, will be destoried",
+	zap.L().Debug("it's expired, will be destoried",
 		zap.ByteString("key", key), zap.Int64("ts", s.Meta.ExpireAt))
 	if err := txn.Destory(&s.Meta.Object, key); err != nil {
 		zap.L().Error("destory expired string failed", zap.ByteString("key", key),
