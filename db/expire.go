@@ -157,13 +157,14 @@ func runExpire(db *DB, batchLimit int) {
 	for iter.Valid() && iter.Key().HasPrefix(expireKeyPrefix) && limit > 0 {
 		rawKey := iter.Key()
 		ts := DecodeInt64(rawKey[expireTimestampOffset : expireTimestampOffset+8])
+		mkey := rawKey[expireMetakeyOffset:]
 		if ts > now {
 			if logEnv := zap.L().Check(zap.DebugLevel, "[Expire] not need to expire key"); logEnv != nil {
-				logEnv.Write(zap.Int64("last timestamp", ts))
+				logEnv.Write( zap.String("metakey", string(mkey)), zap.Int64("last timestamp", ts))
 			}
 			break
 		}
-		mkey := rawKey[expireMetakeyOffset:]
+
 		if err := doExpire(txn, mkey, iter.Value()); err != nil {
 			txn.Rollback()
 			return
