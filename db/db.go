@@ -206,7 +206,7 @@ func (txn *Transaction) Strings(keys [][]byte) ([]*String, error) {
 		if data, ok := mdata[string(tkeys[i])]; ok {
 			if err := obj.decode(data); err != nil {
 				if err == ErrKeyNotFound {
-					zap.L().Debug("strings decode failed",
+					zap.L().Warn("strings decode failed",
 						zap.ByteString("key", key),
 						zap.Error(err))
 				} else {
