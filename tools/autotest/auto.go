@@ -140,6 +140,9 @@ func (ac *AutoClient) ZSetCase(t *testing.T) {
 	ac.ez.ZRemEqual(t, "key-zset", "member2", "member1", "member3", "member4", "member1")
 	ac.ez.ZRangeEqual(t, "key-zset", 0, -1, true)
 
+	ac.ez.ZAddEqual(t, "key-zset-short-key", "2.0", "a", "2.05", "b")
+	ac.ez.ZRemEqual(t, "key-zset-short-key", "a", "e")
+
 	ac.ek.ExpireEqual(t, "key-zset", 5, 1)
 	ac.ez.ZRemEqual(t, "key-zset", "member5", "member11", "member6", "member7")
 	ac.ez.ZRangeEqual(t, "key-zset", 0, -1, true)
